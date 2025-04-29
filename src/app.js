@@ -20,7 +20,10 @@ app.use(helmet());
 app.use(compression());
 
 //init database
-
+require('./dbs/init.mongodb.js');
+// check connect mongodb
+const { checkOverLoad } = require('./helpers/check.connect.js');
+checkOverLoad();
 // init routes
 app.get('/', (req, res, next) => {
     const strCompression = 'Hello Compression'
