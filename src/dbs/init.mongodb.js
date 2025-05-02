@@ -1,11 +1,15 @@
 'use strict'
 const mongoose = require('mongoose');
 
-// const connectString = 'mongodb://localhost:27017/Ecommerce'; 
-const connectString = 
-'mongodb+srv://tiendat:123@cluster0.r2myiyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
+const {db: {host, port, name}} = require('../configs/configs.mongodb.js')
+
+const connectString = `mongodb://${host}:${port}/${name}`;
+// const connectString = 
+// 'mongodb+srv://tiendat:123@cluster0.r2myiyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const { countConnect } = require('../helpers/check.connect.js');
 
+console.log(`ConnectString::`, connectString);
 class Database{
     constructor(){
         this.connect()
