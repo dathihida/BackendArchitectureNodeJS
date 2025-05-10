@@ -6,6 +6,7 @@ const crypto = require('crypto')
 const KeyTokenService = require('./keyToken.service.js')
 const { createTokenPair } = require('../auth/authUtils.js')
 const { getInfoData } = require('../utils/index.js')
+const { BadRequestError } = require('../core/error.response.js')
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -16,14 +17,11 @@ const RoleShop = {
 
 class AccessService {
     static signUp = async ({name, email, password}) => {
-        try {
+        // try {
             // step 1: check email exists
             const holderShop = await shopModel.findOne({ email }).lean()
             if(holderShop){
-                return {
-                    code: 'xxx',
-                    message: 'Shop already registered',
-                }
+                throw new BadRequestError('Error: Shop already exists')
             }
 
             // step 2a: hash password
@@ -65,10 +63,11 @@ class AccessService {
                 })
 
                 if(!keyStore){
-                    return {
-                        code: 'xxx',
-                        message: 'keyStore error',
-                    }
+                    // return {
+                    //     code: 'xxx',
+                    //     message: 'keyStore error',
+                    // }
+                    throw new BadRequestError('Error: keyStore error')
                 }
 
 
@@ -102,14 +101,14 @@ class AccessService {
                 metadata: null,
             }
 
-        } catch (error) {
-            console.log(`Error::`, error);
-            return {
-                code: 'xxx',
-                message: error.message,
-                status: 'error',
-            }
-        }
+        // } catch (error) {
+        //     console.log(`Error::`, error);
+        //     return {
+        //         code: 'xxx',
+        //         message: error.message,
+        //         status: 'error',
+        //     }
+        // }
     }
 }
 
