@@ -7,6 +7,16 @@ x-api-key: 2a02e59c6d395e945d811e3bf6706c5588ebafda26eecc3a33ef772b57194c7add50f
 
 {
     "name": "ShopTest01",
-    "email": "test08@gmail.com",
+    "email": "test11@gmail.com",
+    "password": "abc123"
+}
+
+
+### login
+POST {{url_dev}}/shop/login
+Content-Type: application/json
+
+{
+    "email": "test11@gmail.com",
     "password": "abc123"
 }

@@ -8,6 +8,9 @@ const { createTokenPair } = require('../auth/authUtils.js')
 const { getInfoData } = require('../utils/index.js')
 const { BadRequestError } = require('../core/error.response.js')
 
+// service
+const { findByEmail } = require('./shop.service.js')
+
 const RoleShop = {
     SHOP: 'SHOP',
     WRITER: 'WRITER',
@@ -16,6 +19,50 @@ const RoleShop = {
 }
 
 class AccessService {
+
+    /*
+        1 - check email in db
+        2 - match password
+        3 - create AT vs RT and save
+        4 - generate token
+        5 - get data return login
+    */
+    static login = async({email, password, refreshToken}) => {
+
+        // 1
+        const foundShop = await findByEmail({email})
+        if(!foundShop){
+            throw new BadRequestError('Error: Shop not registered')
+        }
+
+        // 2
+        const match = bcrypt.compare(password, foundShop.password)
+        if(!match){
+            throw new BadRequestError('Error: Authentication error')
+        }
+
+        // 3 create private key, public key 
+        const privateKey = crypto.randomBytes(64).toString('hex');
+        const publicKey = crypto.randomBytes(64).toString('hex');
+
+        // 4
+        const {_id: userId} = foundShop
+        const tokens = await createTokenPair(
+            {userId, email}, publicKey, privateKey)
+        console.log(`Created Token Success::`,tokens);
+
+        // 5
+        await KeyTokenService.createKeyToken({
+            refresherToken: tokens.refreshToken,
+            publicKey,
+            privateKey, userId
+        })
+
+        return {
+            shop: getInfoData({fields: ['_id', 'name', 'email'], object: foundShop}), tokens,
+        }
+    }
+
     static signUp = async ({name, email, password}) => {
         // try {
             // step 1: check email exists
@@ -86,11 +133,6 @@ class AccessService {
                 return {
                     code: 201,
                     metadata: {
-                        // shop: {
-                        //     _id: newShop._id,
-                        //     name: newShop.name,
-                        //     email: newShop.email,
-                        // },
                         shop: getInfoData({fields: ['_id', 'name', 'email'], object: newShop}),
                         tokens,
                     }
