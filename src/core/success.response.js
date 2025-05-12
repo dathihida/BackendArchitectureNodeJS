@@ -10,15 +10,24 @@ const ReasonStatusCode = {
     OK: 'Success',
 }
 
-class SuccessResponse{
-    constructor(message, statusCode = StatusCode.OK, reasonStatusCode = ReasonStatusCode.OK, metadata = {}){
-        this.message = !message ? ReasonStatusCode : message;
+class SuccessResponse {
+    constructor({ 
+        message = ReasonStatusCode.OK,
+        statusCode = StatusCode.OK,
+        reasonStatusCode = ReasonStatusCode.OK,
+        metadata = {} 
+    }) {
+        this.message = message || reasonStatusCode;
         this.status = statusCode;
         this.metadata = metadata;
     }
 
-    send(res, headers = {}){
-        return res.status( this.status ).json(this);
+    send(res, headers = {}) {
+        return res.status(this.status).json({
+            message: this.message,
+            status: this.status,
+            metadata: this.metadata,
+        });
     }
 }
 
