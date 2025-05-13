@@ -23,7 +23,7 @@ var keyTokenSchema = new Schema({
         type:Array,
         default:[], // nhung RT da duoc su dung
     },
-    refresherToken:{
+    refreshToken:{
         type:String,
         default: null,
     },
