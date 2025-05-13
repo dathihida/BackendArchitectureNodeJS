@@ -1,0 +1,15 @@
+'use strict';
+
+const {ProductFactory} = require("../services/product.service.js");
+const { SuccessResponse } = require("../core/success.response.js");
+
+class ProductController {
+    createProduct = async(req, res, next) => {
+        new SuccessResponse({
+            message: 'Create new product success!',
+            metadata: await ProductFactory.createProduct(req.body.product_type, req.body)
+        }).send(res);
+    }
+}
+
+module.exports = new ProductController();
