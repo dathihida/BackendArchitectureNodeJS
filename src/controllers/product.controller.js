@@ -3,6 +3,7 @@
 const {ProductFactory} = require("../services/product.service.js");
 const ProductFactoryV2 = require("../services/product.service.xxx.js");
 const { SuccessResponse } = require("../core/success.response.js");
+const { get } = require("lodash");
 
 class ProductController {
     createProduct = async(req, res, next) => {
@@ -22,6 +23,50 @@ class ProductController {
                 ...req.body,
                 product_shop: req.user.userId,
             })
+        }).send(res);    
+    }   
+
+    publishProductByShop = async(req, res, next) => {
+        new SuccessResponse({
+            message: 'Create publish product success!',
+            metadata: await ProductFactoryV2.publishProductByShop({
+                product_id: req.params.id,
+                product_shop: req.user.userId,
+            })
+        }).send(res);  
+    }
+
+    unPublishProductByShop = async(req, res, next) => {
+        new SuccessResponse({
+            message: 'Create unpublish product success!',
+            metadata: await ProductFactoryV2.unPublishProductByShop({
+                product_id: req.params.id,
+                product_shop: req.user.userId,
+            })
+        }).send(res);  
+    }
+
+    //Query
+    /**
+     * @desc Get all Draft for shop
+     * @param {Number} limit 
+     * @param {Number} kip 
+     * return {JSON}
+     */
+    getAllDraftsForShop = async(req, res, next) => {
+        new SuccessResponse({
+        message: 'Get all list draft success!',
+        metadata: await ProductFactoryV2.findAllDraftProducts({
+            product_shop: req.user.userId,})
+        }).send(res);
+    }
+    //End query
+
+    getAllPublishForShop = async(req, res, next) => {
+        new SuccessResponse({
+        message: 'Get all list publish success!',
+        metadata: await ProductFactoryV2.findAllPublishProducts({
+            product_shop: req.user.userId,})
         }).send(res);
     }
 }
