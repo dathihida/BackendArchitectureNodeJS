@@ -4,7 +4,7 @@ const {product, electronic, clothing, furniture} = require('../../models/product
 const {Types} = require('mongoose')
 const {getSelectData, unSelectData} = require('../../utils/index.js');
 
-// search
+// search product by user
 const searchProductByUser = async({keySearch}) => {
     const regexSearch = new RegExp(keySearch);
     const result = await product.find({ 
