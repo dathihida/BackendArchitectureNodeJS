@@ -9,9 +9,14 @@ const { authenticationV2 } = require('../../auth/authUtils.js');
 // authentication
 // router.use(authentication)
 
+//search
+router.get('/search/:product_name', asyncHandler(productController.getListSearchProducts))
+router.get('', asyncHandler(productController.findAllProducts))
+router.get('/:product_id', asyncHandler(productController.findProducts))
 // authenticationV2
 router.use(authenticationV2)
 ////////////////////////////
+
 router.post('', asyncHandler(productController.createProduct))
 router.post('/publish/:id', asyncHandler(productController.publishProductByShop))
 router.post('/publish/:id', asyncHandler(productController.unPublishProductByShop))

@@ -2,7 +2,9 @@
 
 const { product, electronic, clothing, furniture } = require('../models/product.model.js');
 const {BadRequestError} = require('../core/error.response.js');
-const { findAllDraftProducts, publishProductByShop, findAllPublishProducts, unPublishProductByShop } = require('../models/repositories/product.repo.js');
+const { findAllDraftProducts, publishProductByShop, 
+        findAllPublishProducts, unPublishProductByShop, 
+        searchProductByUser, findAllProducts, findProducts } = require('../models/repositories/product.repo.js');
 
 // define factory class to create product
 class ProductFactoryV2{
@@ -17,7 +19,16 @@ class ProductFactoryV2{
         ProductFactoryV2.productRegistry[type] = classRef;
     }
     
+    // create product
     static async createProduct(type, payload){
+        const productClass = ProductFactoryV2.productRegistry[type];
+        if(!productClass) throw new BadRequestError(`Invalid product type ${type}`);
+
+        return new productClass(payload).createProduct();
+    }
+
+    // update product
+    static async updateProduct(type, payload){
         const productClass = ProductFactoryV2.productRegistry[type];
         if(!productClass) throw new BadRequestError(`Invalid product type ${type}`);
 
@@ -51,8 +62,23 @@ class ProductFactoryV2{
         }
         return await findAllPublishProducts({query, limit, skip});
     }
-}
 
+    //search
+    static async searchProducts({product_name, limit = 50, skip = 0}){
+        return await searchProductByUser({keySearch: product_name?.trim()});
+    }
+
+    // get all products
+    static async findAllProducts({limit = 50, sort = 'ctime', page = 1, filter = {isPublished: true}}){
+        return await findAllProducts({limit, sort, page, filter, 
+            select: ['product_name', 'product_thumb', 'product_price']});
+    }
+
+    // find product 
+    static async findProducts({product_id}){
+        return await findProducts({product_id, unSelect: ['__v'] });
+    }
+}
 
 // define base product class
 class Product{

@@ -69,6 +69,29 @@ class ProductController {
             product_shop: req.user.userId,})
         }).send(res);
     }
+
+    getListSearchProducts = async(req, res, next) => {
+        new SuccessResponse({
+            message: 'Get list search products success!',
+            metadata: await ProductFactoryV2.searchProducts(req.params)
+        }).send(res);
+    }
+
+    findAllProducts = async(req, res, next) => {
+        new SuccessResponse({
+            message: 'Get list all products success!',
+            metadata: await ProductFactoryV2.findAllProducts(req.query)
+        }).send(res);
+    }
+
+    findProducts = async(req, res, next) => {
+        new SuccessResponse({
+            message: 'Get list find one products success!',
+            metadata: await ProductFactoryV2.findProducts({
+                product_id: req.params.product_id
+            })
+        }).send(res);
+    }
 }
 
 module.exports = new ProductController();
