@@ -7,6 +7,7 @@ const { findAllDraftProducts, publishProductByShop,
         searchProductByUser, findAllProducts, findProducts, 
         updateProductById} = require('../models/repositories/product.repo.js');
 const { removeUndefinedObject, updateNestedObjectParser } = require('../utils/index.js');
+const { insertInventory } = require('../models/repositories/inventory.repo.js');
 
 // define factory class to create product
 class ProductFactoryV2{
@@ -105,7 +106,16 @@ class Product{
 
     //create new product
     async createProduct({product_id}){
-        return await product.create({...this, _id: product_id});
+        const newProduct = await product.create({...this, _id: product_id});
+        if(newProduct){
+           // add product_Stock in inventory collection
+            await insertInventory({
+                productId: newProduct._id,
+                shopId: this.product_shop,
+                stock: this.product_quantity
+            })
+        }
+        return newProduct;
     }
 
     // update product
@@ -136,19 +146,19 @@ class Clothing extends Product {
                 b: null,
             }
         */
-       // 1. remove atrr has undefined or null
+        // 1. remove atrr has undefined or null
         //   console.log(`[1]::`, this);
         const objectParams = removeUndefinedObject(this)
         // console.log(`[2]::`, objectParams);
-       // 2. check seen update product
-       if(objectParams.product_attributes){
+        // 2. check seen update product
+        if(objectParams.product_attributes){
             // update child
             await updateProductById({
                 productId, 
                 bodyUpdate: updateNestedObjectParser(objectParams.product_attributes), 
                 model: clothing
             });
-       }
+        }
 
         const updateProduct = await super.updateProduct(
             productId, 
