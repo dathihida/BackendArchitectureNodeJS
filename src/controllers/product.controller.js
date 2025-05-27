@@ -3,7 +3,6 @@
 const {ProductFactory} = require("../services/product.service.js");
 const ProductFactoryV2 = require("../services/product.service.xxx.js");
 const { SuccessResponse } = require("../core/success.response.js");
-const { get } = require("lodash");
 
 class ProductController {
     createProduct = async(req, res, next) => {

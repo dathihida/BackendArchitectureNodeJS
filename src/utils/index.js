@@ -4,7 +4,7 @@ const _ = require('lodash');
 const {Types} = require('mongoose');
 
 
-const convertObjectIdMongodb = id =>Types.ObjectId(id)
+const convertObjectIdMongodb = id => new Types.ObjectId(id);
 const getInfoData = ({ fields = [], object = {} }) =>{
     return _.pick(object, fields);
 }
