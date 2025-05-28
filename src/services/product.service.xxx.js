@@ -73,7 +73,7 @@ class ProductFactoryV2{
     // get all products
     static async findAllProducts({limit = 50, sort = 'ctime', page = 1, filter = {isPublished: true}}){
         return await findAllProducts({limit, sort, page, filter, 
-            select: ['product_name', 'product_thumb', 'product_price']});
+            select: ['product_name', 'product_thumb', 'product_price', 'product_shop']});
     }
 
     // find product 
