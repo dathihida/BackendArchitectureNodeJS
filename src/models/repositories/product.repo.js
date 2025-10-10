@@ -23,7 +23,7 @@ const findAllDraftProducts = async ({query, limit, skip}) => {
     return await queryProduct({query, limit, skip});
 }
 
-const findAllPublishProducts = async ({query, limit, skip}) => { 
+const findAllPublishProductsRepo = async ({query, limit, skip}) => { 
     return await queryProduct({query, limit, skip});
 }
 
@@ -66,7 +66,6 @@ const findAllProducts = async ({limit, sort, page, filter, select})=>{
 }
 
 const findProducts = async ({product_id, unSelect})=>{
-    //
     return await product.findById(product_id).select(unSelectData(unSelect))
 }
 
@@ -88,15 +87,29 @@ const getProductById = async (productId) => {
     return await product.findOne({_id: convertObjectIdMongodb(productId)}).lean();
 }
 
+const checkProductByServer = async (products)=>{
+    return await Promise.all(products.map(async product =>{
+        const foundProduct = await getProductById(product.productId)
+        if(foundProduct){
+            return{
+                price: foundProduct.product_price,
+                quantity: product.quantity,
+                productId: product.productId
+            }
+        }
+    }))
+}
+
 module.exports = {
     findAllDraftProducts,
     publishProductByShop,
-    findAllPublishProducts,
+    findAllPublishProductsRepo,
     unPublishProductByShop,
     searchProductByUser,
     findAllProducts,
     findProducts,
     getProductById,
+    checkProductByServer,
 
     // update product
     updateProductById,

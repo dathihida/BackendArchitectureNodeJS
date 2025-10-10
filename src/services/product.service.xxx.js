@@ -3,7 +3,7 @@
 const { product, electronic, clothing, furniture } = require('../models/product.model.js');
 const {BadRequestError} = require('../core/error.response.js');
 const { findAllDraftProducts, publishProductByShop, 
-        findAllPublishProducts, unPublishProductByShop, 
+        findAllPublishProductsRepo, unPublishProductByShop, 
         searchProductByUser, findAllProducts, findProducts, 
         updateProductById} = require('../models/repositories/product.repo.js');
 const { removeUndefinedObject, updateNestedObjectParser } = require('../utils/index.js');
@@ -62,7 +62,7 @@ class ProductFactoryV2{
             product_shop,
             isPublished: true // return products that are publish = true
         }
-        return await findAllPublishProducts({query, limit, skip});
+        return await findAllPublishProductsRepo({query, limit, skip});
     }
 
     //search

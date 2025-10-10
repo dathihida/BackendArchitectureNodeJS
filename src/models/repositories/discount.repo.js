@@ -25,7 +25,7 @@ const findAllDiscountCodesSelect = async({
         .sort(sortBy)
         .skip(skip)
         .limit(limit)
-        .select(getSelectData(unSelect))
+        .select(getSelectData(select))
         .lean();
     return documents;
 }
