@@ -8,6 +8,7 @@ const { findAllDraftProducts, publishProductByShop,
         updateProductById} = require('../models/repositories/product.repo.js');
 const { removeUndefinedObject, updateNestedObjectParser } = require('../utils/index.js');
 const { insertInventory } = require('../models/repositories/inventory.repo.js');
+const { pushNotiToSync } = require('./notification.service.js');
 
 // define factory class to create product
 class ProductFactoryV2{
@@ -109,11 +110,24 @@ class Product{
         const newProduct = await product.create({...this, _id: product_id});
         if(newProduct){
            // add product_Stock in inventory collection
-            await insertInventory({
+            const invenData = await insertInventory({
                 productId: newProduct._id,
                 shopId: this.product_shop,
                 stock: this.product_quantity
             })
+            // push noti to system collection
+            pushNotiToSync({
+                type: 'SHOP-001',
+                senderId: this.product_shop,
+                receiverId: 1,
+                options: {
+                    product_name: this.product_name,
+                    shope_name: this.product_shop
+                }
+            }).then(rs=>console.log(`Push noti success`))
+            .catch(err=>console.log(`Push noti error`, err));
+            
+            console.log(`invenData::`, invenData);
         }
         return newProduct;
     }

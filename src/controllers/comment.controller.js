@@ -1,5 +1,6 @@
 'use strict'
 
+const { SuccessResponse } = require("../core/success.response.js");
 const {createComment, getCommentsByParentId, deleteComments} = require('../services/comment.service.js');
 
 class CommentController{
